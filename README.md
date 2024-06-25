@@ -4,6 +4,6 @@
 - 💞️ I’m keen on collaborating on web projects, DevOps automation, or Node.js applications.
 - 📫 You can reach me on GitHub @hexabytecode or via email at hexabyte@email.com.
 
-"Get 1% better every day." – Unknown
+"Get 1% better every day." – James Clear
 
 Consistent small improvements fuel my journey. Excited about new opportunities and collaborating within the tech community!
