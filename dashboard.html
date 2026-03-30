@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Freelance Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --surface2: #22222c;
+      --border: #2e2e3d;
+      --accent: #7c6af7;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --red: #f87171;
+      --text: #e4e4f0;
+      --text2: #9090a8;
+      --text3: #5a5a72;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+    .logo span { color: var(--accent2); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      border: none; cursor: pointer; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600; padding: 8px 16px;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn:hover { opacity: .85; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost { background: var(--surface2); color: var(--text); }
+
+    /* ── MAIN LAYOUT ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    main { padding: 28px; max-width: 1280px; margin: 0 auto; }
+
+    h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
+
+    /* ── ANALYTICS CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .card-label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 10px; }
+    .card-value { font-size: 28px; font-weight: 700; line-height: 1; }
+    .card-sub { font-size: 12px; color: var(--text3); margin-top: 6px; }
+    .card-value.green { color: var(--green); }
+    .card-value.amber { color: var(--amber); }
+    .card-value.accent { color: var(--accent2); }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title { font-size: 16px; font-weight: 700; }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--surface2); }
+    th {
+      text-align: left; padding: 12px 16px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .5px; color: var(--text2);
+    }
+    td { padding: 13px 16px; border-top: 1px solid var(--border); vertical-align: middle; }
+    tbody tr { transition: background .12s; }
+    tbody tr:hover { background: var(--surface2); cursor: pointer; }
+
+    .project-name { font-weight: 600; font-size: 14px; }
+    .project-name small { display: block; font-weight: 400; color: var(--text2); font-size: 12px; margin-top: 2px; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; text-transform: capitalize;
+    }
+    .badge-retainer { background: #2d1f6e; color: var(--accent2); }
+    .badge-onetime  { background: #1a2e28; color: var(--green); }
+    .badge-agency   { background: #2e2218; color: var(--amber); }
+    .badge-personal { background: #1e2a3a; color: #60a5fa; }
+
+    .effort-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; margin-right: 6px;
+    }
+    .low    { background: var(--green); }
+    .medium { background: var(--amber); }
+    .high   { background: var(--red); }
+
+    .progress-bar {
+      background: var(--surface2); border-radius: 4px; height: 6px;
+      overflow: hidden; min-width: 80px;
+    }
+    .progress-fill { height: 100%; border-radius: 4px; background: var(--accent); }
+
+    /* ── DAILY TIMELINE ── */
+    .timeline-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .timeline-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .day-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .day-label { font-size: 11px; color: var(--text2); text-transform: uppercase; }
+    .day-bar-wrap { width: 36px; height: 100px; background: var(--surface2); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
+    .day-bar { width: 100%; border-radius: 6px; transition: height .3s ease; }
+    .day-hours { font-size: 11px; color: var(--text2); }
+    .day-col.today .day-label { color: var(--accent2); font-weight: 700; }
+    .day-col.today .day-bar { background: var(--accent); }
+
+    /* ── PROJECT DETAIL PAGE ── */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: none; border: none; color: var(--text2); cursor: pointer;
+      font-size: 13px; font-weight: 600; margin-bottom: 20px; padding: 0;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    .detail-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .detail-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .detail-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .detail-stat { text-align: center; }
+    .detail-stat-value { font-size: 22px; font-weight: 700; color: var(--accent2); }
+    .detail-stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    .assets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .asset-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .asset-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .asset-name { font-weight: 600; font-size: 14px; }
+    .asset-type { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .asset-hours { font-size: 22px; font-weight: 700; color: var(--accent2); }
+    .asset-hours-label { font-size: 10px; color: var(--text3); }
+    .asset-meta { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .meta-pill {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--surface2); border-radius: 20px;
+      padding: 3px 10px; font-size: 11px; font-weight: 500; color: var(--text2);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto;
+      transform: translateY(12px); transition: transform .2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-head {
+      padding: 20px 24px 0; display: flex;
+      justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .modal-title { font-size: 17px; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 20px; line-height: 1; }
+    .modal-body { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); }
+    .form-group input, .form-group select {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      padding: 9px 12px; font-size: 13px;
+      outline: none; transition: border-color .15s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-group select option { background: var(--surface2); }
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center; padding: 60px 20px; color: var(--text3);
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-text { font-size: 14px; }
+
+    /* ── NEXT GIG BANNER ── */
+    .next-gig {
+      background: linear-gradient(135deg, #1e1b4b 0%, #1a2e28 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .next-gig-label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+    .next-gig-value { font-size: 18px; font-weight: 700; color: var(--green); }
+    .next-gig-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    @media (max-width: 640px) {
+      main { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .timeline-grid { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+      .day-bar-wrap { width: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">work<span>board</span></div>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="btn btn-primary" onclick="openModal('project')">+ New Project</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════ DASHBOARD PAGE ══════════════════════ -->
+<div id="page-dashboard" class="page active">
+  <main>
+    <h2>Your Dashboard</h2>
+    <p class="subtitle">All your active projects & analytics at a glance.</p>
+
+    <!-- Analytics cards -->
+    <div class="cards" id="analytics-cards"></div>
+
+    <!-- Next gig banner -->
+    <div class="next-gig" id="next-gig-banner">
+      <div>
+        <div class="next-gig-label">Next available gig slot</div>
+        <div class="next-gig-value" id="next-gig-value">—</div>
+        <div class="next-gig-sub" id="next-gig-sub"></div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('project')">Accept a new gig</button>
+    </div>
+
+    <!-- Daily workload -->
+    <div class="timeline-wrap">
+      <div class="timeline-title">Weekly workload (hrs / day)</div>
+      <div class="timeline-grid" id="timeline-grid"></div>
+    </div>
+
+    <!-- Projects table -->
+    <div style="margin-top:32px">
+      <div class="section-header">
+        <div class="section-title">Projects</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Type</th>
+              <th>Source</th>
+              <th>Deadline / Period</th>
+              <th>Assets</th>
+              <th>Total Hrs</th>
+              <th>Monthly</th>
+            </tr>
+          </thead>
+          <tbody id="projects-tbody"></tbody>
+        </table>
+        <div id="projects-empty" class="empty" style="display:none">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">No projects yet — add one above.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════ DETAIL PAGE ══════════════════════ -->
+<div id="page-detail" class="page">
+  <main>
+    <button class="back-btn" onclick="showPage('dashboard')">
+      ← Back to dashboard
+    </button>
+    <div class="detail-header" id="detail-header"></div>
+    <div class="section-header">
+      <div class="section-title">Assets</div>
+      <button class="btn btn-primary" onclick="openModal('asset')" id="add-asset-btn">+ Add Asset</button>
+    </div>
+    <div class="assets-grid" id="assets-grid"></div>
+    <div id="assets-empty" class="empty" style="display:none">
+      <div class="empty-icon">🗂️</div>
+      <div class="empty-text">No assets yet — add the deliverables for this project.</div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════ PROJECT MODAL ══════════════════════ -->
+<div class="modal-overlay" id="modal-project" onclick="closeModalIf(event,'modal-project')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">New Project</div>
+      <button class="modal-close" onclick="closeModal('modal-project')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Project name</label>
+        <input type="text" id="p-name" placeholder="e.g. Acme Brand Identity" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select id="p-type" onchange="toggleDeadline()">
+            <option value="retainer">Retainer</option>
+            <option value="onetime">One-time</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Source</label>
+          <select id="p-source">
+            <option value="personal">Personal gig</option>
+            <option value="agency">Agency</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" id="deadline-row">
+        <div class="form-group" id="period-group">
+          <label>Billing period</label>
+          <select id="p-period">
+            <option value="monthly">Monthly</option>
+            <option value="bimonthly">Bi-monthly</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+        <div class="form-group" id="deadline-group" style="display:none">
+          <label>Deadline</label>
+          <input type="date" id="p-deadline" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Monthly / project rate (₹)</label>
+          <input type="number" id="p-rate" placeholder="50000" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Working days / week</label>
+          <input type="number" id="p-days" placeholder="5" min="1" max="7" value="5" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-project')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Save project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ ASSET MODAL ══════════════════════ -->
+<div class="modal-overlay" id="modal-asset" onclick="closeModalIf(event,'modal-asset')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add Asset</div>
+      <button class="modal-close" onclick="closeModal('modal-asset')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Asset name</label>
+        <input type="text" id="a-name" placeholder="e.g. Instagram Reels (4 videos)" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Asset type</label>
+          <select id="a-type">
+            <option value="Social Media">Social Media</option>
+            <option value="Video">Video</option>
+            <option value="Illustration">Illustration</option>
+            <option value="Branding">Branding</option>
+            <option value="UI/UX">UI/UX</option>
+            <option value="Copy / Content">Copy / Content</option>
+            <option value="Photography">Photography</option>
+            <option value="Print">Print</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Hours allocated</label>
+          <input type="number" id="a-hours" placeholder="8" min="0.5" step="0.5" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Priority</label>
+          <select id="a-priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Effort</label>
+          <select id="a-effort">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-asset')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAsset()">Add asset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const TODAY_IDX = (new Date().getDay() + 6) % 7; // 0=Mon
+
+// Seed data so the prototype has something to show immediately
+let projects = [
+  {
+    id: 1, name: 'Zara Lifestyle Brand', type: 'retainer', source: 'agency',
+    period: 'monthly', deadline: null, rate: 45000, workingDays: 5,
+    assets: [
+      { id: 1, name: 'IG Feed Posts (12)', type: 'Social Media', hours: 10, priority: 'high', effort: 'medium' },
+      { id: 2, name: 'Reels Scripts (4)', type: 'Copy / Content', hours: 4, priority: 'medium', effort: 'low' },
+      { id: 3, name: 'Story Templates', type: 'Social Media', hours: 3, priority: 'low', effort: 'low' },
+      { id: 4, name: 'Monthly Mood-board', type: 'Branding', hours: 2, priority: 'medium', effort: 'low' },
+    ]
+  },
+  {
+    id: 2, name: 'Brew & Co. Website', type: 'onetime', source: 'personal',
+    period: null, deadline: '2026-05-15', rate: 80000, workingDays: 5,
+    assets: [
+      { id: 1, name: 'Homepage Design', type: 'UI/UX', hours: 12, priority: 'high', effort: 'high' },
+      { id: 2, name: 'Brand Identity', type: 'Branding', hours: 8, priority: 'high', effort: 'high' },
+      { id: 3, name: 'Product Illustrations (6)', type: 'Illustration', hours: 10, priority: 'medium', effort: 'high' },
+    ]
+  },
+  {
+    id: 3, name: 'Noor Wellness Retainer', type: 'retainer', source: 'personal',
+    period: 'monthly', deadline: null, rate: 28000, workingDays: 5,
+    assets: [
+      { id: 1, name: 'Newsletter (4 issues)', type: 'Copy / Content', hours: 6, priority: 'medium', effort: 'medium' },
+      { id: 2, name: 'Pinterest Pins (20)', type: 'Social Media', hours: 5, priority: 'low', effort: 'low' },
+    ]
+  },
+];
+let nextProjectId = 4;
+let currentProjectId = null;
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const getProject = id => projects.find(p => p.id === id);
+const totalHours = p => p.assets.reduce((s, a) => s + a.hours, 0);
+const periodLabel = p => p.type === 'retainer'
+  ? ({ monthly: 'Monthly', bimonthly: 'Bi-monthly', weekly: 'Weekly' }[p.period])
+  : formatDate(p.deadline);
+const formatDate = d => d ? new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) : '—';
+const monthlyInflow = p => {
+  if (p.type === 'retainer') {
+    return p.period === 'weekly' ? p.rate * 4
+      : p.period === 'bimonthly' ? p.rate / 2
+      : p.rate;
+  }
+  // one-time: amortise over months until deadline
+  const months = Math.max(1, Math.ceil((new Date(p.deadline) - new Date()) / (1000*60*60*24*30)));
+  return Math.round(p.rate / months);
+};
+
+function totalMonthlyInflow() {
+  return projects.reduce((s, p) => s + monthlyInflow(p), 0);
+}
+
+function totalDailyHours() {
+  // Total hours per month / working days in month (~21.7)
+  const hrs = projects.reduce((s, p) => {
+    const mHrs = p.type === 'retainer'
+      ? totalHours(p) * (p.period === 'weekly' ? 4 : p.period === 'bimonthly' ? 0.5 : 1)
+      : totalHours(p);
+    return s + mHrs;
+  }, 0);
+  return (hrs / 21.7).toFixed(1);
+}
+
+function weeklyHoursPerDay() {
+  // Spread hours across Mon-Fri weighted by project workingDays
+  const arr = [0,0,0,0,0,0,0];
+  projects.forEach(p => {
+    const mHrs = p.type === 'retainer'
+      ? totalHours(p) * (p.period === 'weekly' ? 4 : p.period === 'bimonthly' ? 0.5 : 1)
+      : totalHours(p);
+    const daily = mHrs / (21.7);
+    const days = Math.min(p.workingDays, 7);
+    for (let i = 0; i < days; i++) arr[i] += daily;
+  });
+  return arr.map(v => Math.round(v * 10) / 10);
+}
+
+function availableHoursPerDay(target = 8) {
+  const daily = parseFloat(totalDailyHours());
+  return Math.max(0, target - daily).toFixed(1);
+}
+
+function nextGigInfo() {
+  const avail = parseFloat(availableHoursPerDay());
+  if (avail <= 0) return { label: 'Fully booked', sub: 'Clear a project to free up time', canTake: false };
+  if (avail >= 4) return { label: 'Available now', sub: `~${avail}h free daily`, canTake: true };
+  return { label: `${avail}h / day free`, sub: 'Small gig or revision work possible', canTake: true };
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  renderCards();
+  renderNextGig();
+  renderTimeline();
+  renderTable();
+}
+
+function renderCards() {
+  const inflow = totalMonthlyInflow();
+  const daily = totalDailyHours();
+  const avail = availableHoursPerDay();
+  document.getElementById('analytics-cards').innerHTML = `
+    <div class="card">
+      <div class="card-label">Monthly Inflow</div>
+      <div class="card-value green">₹${inflow.toLocaleString('en-IN')}</div>
+      <div class="card-sub">across ${projects.length} project${projects.length !== 1 ? 's' : ''}</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Avg. Daily Hours</div>
+      <div class="card-value amber">${daily}h</div>
+      <div class="card-sub">based on current load</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Free Capacity</div>
+      <div class="card-value accent">${avail}h</div>
+      <div class="card-sub">available daily (of 8h)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Active Projects</div>
+      <div class="card-value">${projects.length}</div>
+      <div class="card-sub">${projects.filter(p=>p.type==='retainer').length} retainer · ${projects.filter(p=>p.type==='onetime').length} one-time</div>
+    </div>
+  `;
+}
+
+function renderNextGig() {
+  const info = nextGigInfo();
+  document.getElementById('next-gig-value').textContent = info.label;
+  document.getElementById('next-gig-sub').textContent = info.sub;
+  document.getElementById('next-gig-banner').style.borderColor = info.canTake ? 'var(--green)' : 'var(--red)';
+}
+
+function renderTimeline() {
+  const hrs = weeklyHoursPerDay();
+  const maxH = Math.max(...hrs, 1);
+  const target = 8;
+  document.getElementById('timeline-grid').innerHTML = DAYS.map((d, i) => {
+    const h = hrs[i];
+    const pct = Math.min(h / target, 1) * 100;
+    const color = h > target ? 'var(--red)' : h > target * .75 ? 'var(--amber)' : 'var(--accent)';
+    const isTd = i === TODAY_IDX;
+    return `
+      <div class="day-col${isTd ? ' today' : ''}">
+        <div class="day-label">${d}</div>
+        <div class="day-bar-wrap">
+          <div class="day-bar" style="height:${pct}%;background:${color}"></div>
+        </div>
+        <div class="day-hours">${h}h</div>
+      </div>`;
+  }).join('');
+}
+
+function renderTable() {
+  const tbody = document.getElementById('projects-tbody');
+  const empty = document.getElementById('projects-empty');
+  if (!projects.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = projects.map(p => {
+    const hrs = totalHours(p);
+    const inflow = monthlyInflow(p);
+    const pct = Math.min((hrs / 40) * 100, 100);
+    const high = p.assets.filter(a => a.priority === 'high').length;
+    return `
+      <tr onclick="openProject(${p.id})">
+        <td>
+          <div class="project-name">${p.name}
+            <small>${p.assets.length} asset${p.assets.length !== 1 ? 's' : ''}${high ? ` · ${high} high priority` : ''}</small>
+          </div>
+        </td>
+        <td><span class="badge badge-${p.type}">${p.type === 'onetime' ? 'One-time' : 'Retainer'}</span></td>
+        <td><span class="badge badge-${p.source}">${p.source}</span></td>
+        <td style="color:var(--text2);font-size:13px">${periodLabel(p)}</td>
+        <td style="font-weight:600">${p.assets.length}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <span style="font-size:13px;color:var(--text2)">${hrs}h</span>
+          </div>
+        </td>
+        <td style="color:var(--green);font-weight:600">₹${inflow.toLocaleString('en-IN')}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ── DETAIL PAGE ───────────────────────────────────────────────────────────────
+function openProject(id) {
+  currentProjectId = id;
+  const p = getProject(id);
+  renderDetailHeader(p);
+  renderAssets(p);
+  showPage('detail');
+}
+
+function renderDetailHeader(p) {
+  const hrs = totalHours(p);
+  const inflow = monthlyInflow(p);
+  document.getElementById('detail-header').innerHTML = `
+    <div>
+      <div class="detail-title">${p.name}</div>
+      <div class="detail-meta">
+        <span class="badge badge-${p.type}">${p.type === 'onetime' ? 'One-time' : 'Retainer'}</span>
+        <span class="badge badge-${p.source}">${p.source}</span>
+        <span style="color:var(--text2);font-size:13px">${periodLabel(p)}</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap">
+      <div class="detail-stat">
+        <div class="detail-stat-value">${hrs}h</div>
+        <div class="detail-stat-label">Total hours / period</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-value" style="color:var(--green)">₹${inflow.toLocaleString('en-IN')}</div>
+        <div class="detail-stat-label">Monthly inflow</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-value" style="color:var(--amber)">${(hrs/21.7).toFixed(1)}h</div>
+        <div class="detail-stat-label">Avg. daily hrs</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAssets(p) {
+  const grid = document.getElementById('assets-grid');
+  const empty = document.getElementById('assets-empty');
+  if (!p.assets.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = p.assets.map(a => {
+    const effortColor = { low:'var(--green)', medium:'var(--amber)', high:'var(--red)' }[a.effort];
+    const priorColor  = { low:'var(--green)', medium:'var(--amber)', high:'var(--red)' }[a.priority];
+    return `
+      <div class="asset-card">
+        <div class="asset-top">
+          <div>
+            <div class="asset-name">${a.name}</div>
+            <div class="asset-type">${a.type}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="asset-hours">${a.hours}h</div>
+            <div class="asset-hours-label">allocated</div>
+          </div>
+        </div>
+        <div class="asset-meta">
+          <div class="meta-pill">
+            <span class="effort-dot" style="background:${priorColor}"></span>
+            Priority: ${a.priority}
+          </div>
+          <div class="meta-pill">
+            <span class="effort-dot" style="background:${effortColor}"></span>
+            Effort: ${a.effort}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function openModal(type) {
+  document.getElementById('modal-' + type).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function closeModalIf(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+function toggleDeadline() {
+  const isOne = document.getElementById('p-type').value === 'onetime';
+  document.getElementById('period-group').style.display  = isOne ? 'none' : '';
+  document.getElementById('deadline-group').style.display = isOne ? '' : 'none';
+}
+
+function saveProject() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { alert('Please enter a project name.'); return; }
+  const type = document.getElementById('p-type').value;
+  const source = document.getElementById('p-source').value;
+  const rate = parseFloat(document.getElementById('p-rate').value) || 0;
+  const workingDays = parseInt(document.getElementById('p-days').value) || 5;
+  const period  = type === 'retainer' ? document.getElementById('p-period').value : null;
+  const deadline = type === 'onetime' ? document.getElementById('p-deadline').value : null;
+
+  projects.push({ id: nextProjectId++, name, type, source, period, deadline, rate, workingDays, assets: [] });
+  closeModal('modal-project');
+  // clear form
+  ['p-name','p-rate'].forEach(id => document.getElementById(id).value = '');
+  renderDashboard();
+}
+
+function saveAsset() {
+  const name = document.getElementById('a-name').value.trim();
+  if (!name) { alert('Please enter an asset name.'); return; }
+  const hours = parseFloat(document.getElementById('a-hours').value) || 1;
+  const p = getProject(currentProjectId);
+  const nextId = p.assets.length ? Math.max(...p.assets.map(a => a.id)) + 1 : 1;
+  p.assets.push({
+    id: nextId,
+    name,
+    type: document.getElementById('a-type').value,
+    hours,
+    priority: document.getElementById('a-priority').value,
+    effort: document.getElementById('a-effort').value,
+  });
+  closeModal('modal-asset');
+  document.getElementById('a-name').value = '';
+  document.getElementById('a-hours').value = '';
+  renderDetailHeader(p);
+  renderAssets(p);
+  // also refresh dashboard data
+  renderCards();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderDashboard();
+</script>
+</body>
+</html>
