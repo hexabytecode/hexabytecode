@@ -1,0 +1,47 @@
+export const seedProjects = [
+  {
+    id: 1,
+    name: 'Zara Lifestyle Brand',
+    type: 'retainer',
+    source: 'agency',
+    period: 'monthly',
+    deadline: null,
+    rate: 45000,
+    workingDays: 5,
+    assets: [
+      { id: 1, name: 'IG Feed Posts (12)', type: 'Social Media', hours: 10, priority: 'high', effort: 'medium' },
+      { id: 2, name: 'Reels Scripts (4)', type: 'Copy / Content', hours: 4, priority: 'medium', effort: 'low' },
+      { id: 3, name: 'Story Templates', type: 'Social Media', hours: 3, priority: 'low', effort: 'low' },
+      { id: 4, name: 'Monthly Mood-board', type: 'Branding', hours: 2, priority: 'medium', effort: 'low' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Brew & Co. Website',
+    type: 'onetime',
+    source: 'personal',
+    period: null,
+    deadline: '2026-05-15',
+    rate: 80000,
+    workingDays: 5,
+    assets: [
+      { id: 1, name: 'Homepage Design', type: 'UI/UX', hours: 12, priority: 'high', effort: 'high' },
+      { id: 2, name: 'Brand Identity', type: 'Branding', hours: 8, priority: 'high', effort: 'high' },
+      { id: 3, name: 'Product Illustrations (6)', type: 'Illustration', hours: 10, priority: 'medium', effort: 'high' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Noor Wellness Retainer',
+    type: 'retainer',
+    source: 'personal',
+    period: 'monthly',
+    deadline: null,
+    rate: 28000,
+    workingDays: 5,
+    assets: [
+      { id: 1, name: 'Newsletter (4 issues)', type: 'Copy / Content', hours: 6, priority: 'medium', effort: 'medium' },
+      { id: 2, name: 'Pinterest Pins (20)', type: 'Social Media', hours: 5, priority: 'low', effort: 'low' },
+    ],
+  },
+]

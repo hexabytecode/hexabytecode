@@ -1,0 +1,40 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+}
+.logo span { color: var(--accent2); }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .nav {
+    padding: 0 16px;
+  }
+  .actions :global(.btn-ghost) {
+    display: none;
+  }
+  .actions :global(.btn-primary) {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+}
