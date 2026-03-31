@@ -97,6 +97,10 @@ export default function ProjectModal({ open, onClose, onSave }) {
             />
           </div>
         )}
+        <div /> {/* spacer — matches original half-width field */}
+      </div>
+
+      <div className={styles.row}>
         <div className="form-group">
           <label>Monthly / project rate (₹)</label>
           <input
@@ -107,9 +111,6 @@ export default function ProjectModal({ open, onClose, onSave }) {
             onChange={(e) => set('rate', e.target.value)}
           />
         </div>
-      </div>
-
-      <div className={styles.row}>
         <div className="form-group">
           <label>Working days / week</label>
           <input
@@ -121,7 +122,6 @@ export default function ProjectModal({ open, onClose, onSave }) {
             onChange={(e) => set('workingDays', e.target.value)}
           />
         </div>
-        <div /> {/* spacer */}
       </div>
     </Modal>
   )
