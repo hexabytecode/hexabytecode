@@ -104,4 +104,18 @@
 
 @media (max-width: 640px) {
   .main { padding: 16px; }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .stats {
+    gap: 16px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

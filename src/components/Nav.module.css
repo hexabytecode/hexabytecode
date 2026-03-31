@@ -24,3 +24,17 @@
   gap: 10px;
   align-items: center;
 }
+
+@media (max-width: 480px) {
+  .nav {
+    padding: 0 16px;
+  }
+  .actions :global(.btn-ghost) {
+    display: none;
+  }
+  .actions :global(.btn-primary) {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+}
